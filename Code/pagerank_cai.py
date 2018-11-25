@@ -42,3 +42,12 @@ for k, v in pos.items():
 nx.draw_networkx_labels(G2, pos=pos_higher2, alpha=0.7, font_color='r', labels=pr, font_size=8)
 plt.show() # display subgraph
 
+
+## Test code to run pagerank on each node
+prS = []
+counter = 0
+import operator
+for i in G2.nodes():
+    prS.append(pagerankModified(G2, personalization={i:1}))
+    print(i + ":\t\t"+ max(prS[counter].items(), key=operator.itemgetter(1))[0])
+    counter += 1
