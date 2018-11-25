@@ -6,28 +6,30 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from networkx.drawing.nx_agraph import write_dot, graphviz_layout
 from Code.pr_Modified_networkx_lib import pagerank_scipy as pagerankModified
-G = nx.read_gml("../Data/footballTSEweb/footballTSEinput.gml")
 
-#pr = nx.pagerank(G)
-#vect = [G.nodes(x) for x in range(100)]
+# Reads data to G graph. Change gml to read other things
+G = nx.read_gml("../Data/footballTSEweb/footballTSEinput.gml")
 
 vect = [str(x) for x in range(50)]
 
+# Generating a copy of G graph. May be redundant.
 G2 = G
-pos = nx.spring_layout(G2)
+pos = nx.spring_layout(G2) # Layout
 
-
-##
+## Calls page rank for graph without personalization
 pr = pagerankModified(G2)
 ##
-threshold = 0.6
-prList = list(pr.values())
+threshold = 0.6 # Threshold for graph coloring
+prList = list(pr.values()) # This stores dict values as a list (Hope so)
 print(prList)
+# Colormap is a list of RGB A values. Will be used to color the graph depending on the PR value.
+# A (alpha does not work ??)
 colormap = [(0,1 - (prList[x] * 100)**3,1, (prList[x] * 100)) for x in range(len(pr))]
 
 
-#nx.draw_networkx_edges(G2, pos)
+# Following draws graph nodes, labels and edges separately
 nx.draw_networkx_nodes(G2, pos=pos, node_size=150, node_color=colormap)
+# Pos_higher and related calculations are used to draw PR values above nodes.
 pos_higher = {}
 y_off = 0.02  # offset on the y axis
 
@@ -43,7 +45,7 @@ nx.draw_networkx_labels(G2, pos=pos_higher2, alpha=0.7, font_color='r', labels=p
 plt.show() # display subgraph
 
 
-## Test code to run pagerank on each node
+## Test code to run pagerank on each node with personalization
 prS = []
 counter = 0
 import operator
