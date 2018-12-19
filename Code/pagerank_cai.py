@@ -14,6 +14,9 @@ import time
 
 # Reads data to G graph. Change gml to read other things
 G = nx.read_gml("../Data/footballTSEweb/footballTSEinput.gml")
+# Football teams are partitioned into 12 groups (Cai)
+#G = nx.karate_club_graph()
+# Karate club is partitioned into 2 groups ultimately
 vect = [str(x) for x in range(50)]
 
 # Generating a copy of G graph. May be redundant.
@@ -31,8 +34,9 @@ prList = list(pr.values()) # This stores dict values as a list (Hope so)
 colormap = [(0,1 - (prList[x] * 100)**3,1, (prList[x] * 100)) for x in range(len(pr))]
 
 
+
 # Following draws graph nodes, labels and edges separately
-nx.draw_networkx_nodes(G2, pos=pos, node_size=150, node_color=colormap)
+nx.draw_networkx_nodes(G2, pos=pos, node_size=150, node_color='b')
 # Pos_higher and related calculations are used to draw PR values above nodes.
 pos_higher = {}
 y_off = 0.02  # offset on the y axis
@@ -96,25 +100,32 @@ five_nodes = [sorted_pr[tmp_mid], sorted_pr[tmp_mid + 1], sorted_pr[tmp_mid + 2]
 print(five_nodes)
 
 
+
 # Following should run PR personalized at each of the chosen nodes
 prS5 = [] # Clean previous list
 counter = 0
 for i in five_nodes:
     prS5.append(pagerankModified(G2, personalization={i[0]:1}))
-    print(str(i[0]) + ":\t\t" + max(prS5[counter].items(), key=operator.itemgetter(1))[0])
+    print(str(i[0]) + ":\t\t" + str(max(prS5[counter].items(), key=operator.itemgetter(1))[0]))
     counter += 1
 
 
+
+
 #print(prS_modified[0])
-sim_threshold = 0.004
+sim_threshold = 0.01
 for i in prS_modified:
     for p in list(i.keys()):
         if i[p] < sim_threshold:
             del i[p]
-print(prS_modified[0])
+#print(prS_modified[0])
+for i in prS:
+    for p in list(i.keys()):
+        if i[p] < sim_threshold:
+            del i[p]
 
 
-cluster_merge_threshold = 0.6
+cluster_merge_threshold = 0.4
 
 tmp = len(prS_modified)
 i = 0
@@ -132,20 +143,48 @@ while i < tmp:
 print(prS_modified[0])
 print(len(prS_modified))
 
+tmp = len(prS)
+i = 0
+while i < tmp:
+    p = i
+    while p < tmp:
+        if (len(prS[i].keys() & prS[p].keys())
+                / min(len(prS[i]), len(prS[p])) > cluster_merge_threshold):
+            prS[i].update(prS[p])
+            del prS[p]
+            tmp = tmp - 1
+        p = p + 1
+    i = i + 1
+
+
 import matplotlib.pyplot as plt
 from matplotlib import cm as cm
 #print(cm.cmap_d.keys())
 
 #colormap = cm.get_cmap('Blues')
 #colormap = [cm.jet(x) for x in range(len(prS_modified))]
-colormap = ['r', 'g', 'b', 'r', 'b', 'g']
+#colormap = ['r', 'g', 'b', 'r', 'b', 'g']
+#colormap = [cm.jet(i) for i in range(len(prS_modified))]
+colormap = plt.cm.get_cmap('RdYlBu')
+norm = plt.Normalize(vmin=0, vmax=max(len(prS_modified), len(prS)))
 print(colormap)
 
 
 print(len(prS_modified))
 for i in range(len(prS_modified)):
+    #colormap[i] = [colormap[i] for x in range(len(prS_modified))]
     clusteri = nx.Graph(G2.subgraph(prS_modified[i]))
     nx.draw_networkx_nodes(clusteri, pos=pos,
-                           node_color=colormap[i])
+                           cmap=colormap(norm(i)),
+                           node_color=colormap(norm(i)), alpha=0.8)
+    nx.draw_networkx_edges(clusteri, pos=pos)
+plt.show()
+
+print(len(prS))
+for i in range(len(prS)):
+    clusteri = nx.Graph(G2.subgraph(prS[i]))
+    nx.draw_networkx_nodes(clusteri, pos=pos,
+                           cmap=colormap(norm(i)),
+                           node_color=colormap(norm(i)), alpha=0.8)
     nx.draw_networkx_edges(clusteri, pos=pos)
 plt.show()
