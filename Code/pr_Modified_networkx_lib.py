@@ -400,9 +400,10 @@ def pagerank_scipy(G, alpha=0.85, personalization=None,
 
     # power iteration: make up to max_iter iterations
     lambda_norm = 1.2 # A value between 1 and +inf
+    import numpy as np
     for _ in range(max_iter):
         xlast = x
-        x = alpha * ((x**lambda_norm / sum(x**lambda_norm)) * M + sum(x[is_dangling]) * dangling_weights) + \
+        x = alpha * (np.divide(np.power(x,lambda_norm), sum(np.multiply(x,lambda_norm))) * M + sum(x[is_dangling]) * dangling_weights) + \
             (1 - alpha) * p
         # check convergence, l1 norm
         err = scipy.absolute(x - xlast).sum()
