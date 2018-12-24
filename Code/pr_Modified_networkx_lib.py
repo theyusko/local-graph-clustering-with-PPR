@@ -403,8 +403,14 @@ def pagerank_scipy(G, alpha=0.85, personalization=None,
     import numpy as np
     for _ in range(max_iter):
         xlast = x
+
         x = alpha * (np.divide(np.power(x,lambda_norm), sum(np.multiply(x,lambda_norm))) * M + sum(x[is_dangling]) * dangling_weights) + \
             (1 - alpha) * p
+        '''
+        x = alpha * (x * M + sum(x[is_dangling]) * dangling_weights) + \
+            (1 - alpha) * p
+        M = M + np.divide(np.power(x,lambda_norm), sum(np.multiply(x,lambda_norm)))
+        '''
         # check convergence, l1 norm
         err = scipy.absolute(x - xlast).sum()
         if err < N * tol:

@@ -6,7 +6,7 @@ import operator
 import networkx as nx
 import matplotlib.pyplot as plt
 from networkx.drawing.nx_agraph import write_dot, graphviz_layout
-from Code.pr_Modified_networkx_lib import pagerank_scipy as pagerankModified
+from Code.utilities import pagerank_scipy_modified as pagerankModified
 from networkx import pagerank_scipy as pagerank_scipy
 import Code.utilities as my_utilities
 import time
