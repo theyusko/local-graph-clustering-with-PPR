@@ -1,6 +1,13 @@
 import numpy as np
 import networkx as nx
 
+
+'''
+References:
+*Bingjing Cai et. al. An Improved Random Walk Based Clustering Algorithm for Community Detection in Complex Networks IEEE International Conference, 2011.
+https://ieeexplore.ieee.org/document/6083997
+*(Networkx)Aric A. Hagberg, Daniel A. Schult and Pieter J. Swart, “Exploring network structure, dynamics, and function using NetworkX”, in Proceedings of the 7th Python in Science Conference (SciPy2008), Gäel Varoquaux, Travis Vaught, and Jarrod Millman (Eds), (Pasadena, CA USA), pp. 11–15, Aug 2008
+'''
 def pagerank_scipy_modified(G, alpha=0.85, personalization=None,
                             max_iter=100, tol=1.0e-6, weight='weight',
                             dangling=None):

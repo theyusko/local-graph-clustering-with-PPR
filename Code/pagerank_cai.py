@@ -11,7 +11,10 @@ from networkx import pagerank_scipy as pagerank_scipy
 import Code.utilities as my_utilities
 import time
 
-
+'''
+References: Mark Newman. Network data. [Online]. Available: http://www-
+personal.umich.edu/ mejn/netdata/.
+'''
 # Reads data to G graph. Change gml to read other things
 G = nx.read_gml("../Data/footballTSEweb/footballTSEinput.gml")
 # Football teams are partitioned into 12 groups (Cai)
@@ -184,6 +187,7 @@ for i in range(len(prS_modified)):
                            cmap=colormap(norm(i)),
                            node_color=colormap(norm(i)), alpha=0.5)
     nx.draw_networkx_edges(clusteri, pos=pos)
+plt.title("Graph generated with modified pagerank")
 plt.show()
 
 
@@ -195,6 +199,7 @@ for i in range(len(prS)):
                            cmap=colormap(norm(i)),
                            node_color=colormap(norm(i)), alpha=0.5)
     nx.draw_networkx_edges(clusteri, pos=pos)
+plt.title("Graph generated with standard pagerank")
 plt.show()
 
 
@@ -246,10 +251,12 @@ def draw_community(g, position):
     # for c in top_level_communities:
     #   nx.draw_networkx_nodes(g, position, nodelist=list(c), node_color=colors[index])
     #  index += 1
+    plt.title("Graph generated with GN algorithm")
     index = 0
     for c in next_level_communities3:
         nx.draw_networkx_nodes(g, position, nodelist=list(c), node_color=colors[index])
         index += 1
+
     plt.show()
     print(end_time - start_time)
 
